@@ -18,6 +18,23 @@ public class BoardRepositoryTest {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Test
+    public void deleteById() {
+        //given
+        int id = 1;
+
+
+        //when
+        int result = boardRepository.deleteById(id);
+
+
+        //eye
+        System.out.println(result);
+    }
+
+
+
+
 
     @Test
     public void findById() {

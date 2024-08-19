@@ -23,7 +23,7 @@ public class BoardRepository {
 
     @Transactional
     public int deleteById(int id) {
-        Query query = em.createQuery("delete from board_tb where id= ?", Board.class);
+        Query query = em.createNativeQuery("delete from board_tb where id= ?", Board.class);
         query.setParameter(1, id);
         try {
             int result = query.executeUpdate();

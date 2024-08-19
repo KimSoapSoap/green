@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.board;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,14 @@ public class BoardController {
         //System.out.println("Controller 생성자");
         this.boardRepository = boardRepository;
     }
+
+
+    @PostMapping("/board/{id}/delete")
+    public String delete(@PathVariable int id) {
+        int result = boardRepository.deleteById(id);
+        return "redirect:/board";
+    }
+
 
 
     @PostMapping("/board/save")

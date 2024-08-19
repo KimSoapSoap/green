@@ -21,6 +21,21 @@ public class BoardRepository {
     private EntityManager em;
 
 
+    @Transactional
+    public int deleteById(int id) {
+        Query query = em.createQuery("delete from board_tb where id= ?", Board.class);
+        query.setParameter(1, id);
+        try {
+            int result = query.executeUpdate();
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException("게시글 id를 찾을 수 없습니다.");
+        }
+
+
+    }
+
+
     public Board findById(int id) {
         Query query = em.createNativeQuery("select * from board_tb where id =?", Board.class);
         query.setParameter(1, id);

@@ -20,10 +20,20 @@ public class BoardRepository {
     @Autowired  //IoC에 있는 객체를 찾아 온다. (EntityManager도 생성되어 IoC에 떠 있는 상태)
     private EntityManager em;
 
+    @Transactional
+    public void updatdById(String title, String content, int id) {
+        Query query = em.createNativeQuery("update board_tb set title = ?, content = ? where id = ?");
+        query.setParameter(1, title);
+        query.setParameter(2, content);
+        query.setParameter(3, id);
+
+        query.executeUpdate();
+    }
+
 
     @Transactional
     public int deleteById(int id) {
-        Query query = em.createNativeQuery("delete from board_tb where id= ?", Board.class);
+        Query query = em.createNativeQuery("delete from board_tb where id= ?");
         query.setParameter(1, id);
         try {
             int result = query.executeUpdate();
@@ -37,6 +47,7 @@ public class BoardRepository {
 
 
     public Board findById(int id) {
+        //두 번째 전달자 Board.class는 조회할 때만 해당 클래스의 정보를 담아서 가지고 오기 위해 필요하다. 수정 삭제에는 불필요
         Query query = em.createNativeQuery("select * from board_tb where id =?", Board.class);
         query.setParameter(1, id);
         //query.getSingleResult()는 Object를 리턴하기 때문에 (Board)로 다운캐스팅 해준다.

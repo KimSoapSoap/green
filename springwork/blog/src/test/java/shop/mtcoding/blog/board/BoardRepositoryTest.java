@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.board;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -18,34 +19,61 @@ public class BoardRepositoryTest {
     @Autowired
     private BoardRepository boardRepository;
 
+
     @Test
-    public void deleteById() {
+    public void updateById_test() {
+        // given
+        int id = 1;
+        String title = "제목1변경";
+        String content = "내용1변경";
+
+        // when
+        boardRepository.updatdById(title, content, id);
+
+
+        // then
+        Board board = boardRepository.findById(id);
+        Assertions.assertThat(board.getTitle()).isEqualTo("제목2변경");
+    }
+
+    @Test
+    public void deleteById_test() {
         //given
         int id = 1;
 
-
         //when
-        int result = boardRepository.deleteById(id);
+        boardRepository.deleteById(id);
 
-
-        //eye
-        System.out.println(result);
+        //then
+        try {
+            //삭제됐으면 찾을 수 없기에 findById(Int id)에 우리가 만들어 둔 예외를 던짐
+            boardRepository.findById(id);
+        } catch (Exception e) {
+            //검색한 것을 찾을 수 없을 때 던지도록 만들어 둔 예외를 잡아서 catch구문으로 내려오고 에러코드의 메시지 일치를 검증한다.
+            //오타를 낼 수 있으니 상수처리 하거나 ENUM으로 해주면 안정성이 높아 진다
+            Assertions.assertThat(e.getMessage()).isEqualTo("게시글 id를 찾을 수 없습니다.");
+        }
     }
 
 
-
-
-
     @Test
-    public void findById() {
+    public void findById_test() {
         // given
-        int id = 6;
+        int id = 1;
 
         // when
         Board board = boardRepository.findById(id);
 
         // eye (then - assertion을 사용한다.)
         System.out.println(board);
+
+
+        //then (코드로 검증 -> eye 대신 사용. 일단 eye는 남겨놨다)
+        //Assertions는 assertj를 사용한다.(기능이 더 많음)
+        //Aseertions.assertThat(A).isEqualTo(B)   -> A와 B가 일치하기를 기대한다.
+        //모든 필드에 대해 다 한다
+        Assertions.assertThat(board.getTitle()).isEqualTo("제목1");
+        Assertions.assertThat(board.getContent()).isEqualTo("내용1");
     }
 
 
@@ -82,6 +110,9 @@ public class BoardRepositoryTest {
 
 
         // eye (눈으로 확인)
+
+
+        //then
 
     }
 

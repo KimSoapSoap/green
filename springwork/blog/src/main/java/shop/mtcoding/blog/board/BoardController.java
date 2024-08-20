@@ -1,7 +1,7 @@
 package shop.mtcoding.blog.board;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,18 +17,30 @@ public class BoardController {
     @Autowired
     private final BoardRepository boardRepository;
 
+
     public BoardController(BoardRepository boardRepository) {
         //System.out.println("Controller 생성자");
         this.boardRepository = boardRepository;
     }
 
 
-    @PostMapping("/board/{id}/delete")
-    public String delete(@PathVariable int id) {
-        int result = boardRepository.deleteById(id);
-        return "redirect:/board";
+    // url : https://localhost:8080/board/1/update
+    // body : title = 제목1변경&content=내용1변경
+    // conent-type : x-www-form-urlencoded
+    @PostMapping("/board/{id}/update")
+    public String update(@PathVariable("id") int id, String title, String content) {
+        boardRepository.updatdById(title, content, id);
+        return "redirect:/board/" + id;
+
     }
 
+
+    @PostMapping("/board/{id}/delete")
+    public String delete(@PathVariable("id") int id) {
+        //원래는 검증을 하고 지워야 되지만 V1에서는 그냥 바로 삭제한다.
+        boardRepository.deleteById(id);
+        return "redirect:/board";
+    }
 
 
     @PostMapping("/board/save")
@@ -84,8 +96,11 @@ public class BoardController {
     // 2. 주소 : /board/1/update-form
     // 3. 응답 : board/update-form
 
-    @GetMapping("/board/1/update-form")
-    public String updateForm() {
+    //{id}는 정규표현식인데 @PathVariable이 이를 받아준다.
+    @GetMapping("/board/{id}/update-form")
+    public String updateForm(@PathVariable("id") int id, HttpServletRequest request) {
+        Board board = boardRepository.findById(id);
+        request.setAttribute("model", board);
         return "board/update-form";
     }
 

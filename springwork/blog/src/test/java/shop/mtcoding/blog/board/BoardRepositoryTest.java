@@ -57,7 +57,7 @@ public class BoardRepositoryTest {
 
 
     @Test
-    public void findById() {
+    public void findById_test() {
         // given
         int id = 1;
 
@@ -71,7 +71,9 @@ public class BoardRepositoryTest {
         //then (코드로 검증 -> eye 대신 사용. 일단 eye는 남겨놨다)
         //Assertions는 assertj를 사용한다.(기능이 더 많음)
         //Aseertions.assertThat(A).isEqualTo(B)   -> A와 B가 일치하기를 기대한다.
-        Assertions.assertThat(board.getTitle()).isEqualTo("제목2");
+        //모든 필드에 대해 다 한다
+        Assertions.assertThat(board.getTitle()).isEqualTo("제목1");
+        Assertions.assertThat(board.getContent()).isEqualTo("내용1");
     }
 
 
@@ -108,6 +110,9 @@ public class BoardRepositoryTest {
 
 
         // eye (눈으로 확인)
+
+
+        //then
 
     }
 

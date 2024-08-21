@@ -19,7 +19,8 @@ public class UserRepositoryTest {
         String password = "1234";
         String email = "haha@nate.com";
 
-        userRepository.save(username, password, email);
+        User user = User.builder().username(username).password(password).email(email).build();
+        userRepository.save(user);
     }
 
 }

@@ -12,6 +12,7 @@ public class UserRequest {
         private String email;
 
         //이 메서드의 책임은 DTO -> UserObject로 바꿔주는 책임
+        //toEntity()는 insert 할 때만 필요. select 할 때는 만들어줄 필요 없다.
         public User toEntity() {
             return User.builder().username(username).password(password).email(email).build();
         }

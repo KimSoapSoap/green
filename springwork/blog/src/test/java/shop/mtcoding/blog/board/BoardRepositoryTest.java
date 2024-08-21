@@ -82,14 +82,24 @@ public class BoardRepositoryTest {
         // given
 
         // when
-        List<Board> boardList = boardRepository.findAll();
+        System.out.println("1. 첫번째 조회");
 
-        // eye(원래는 then이고 assertion-that?을 쓴다)
-        System.out.println("사이즈: " + boardList.size());
-        for (Board board : boardList) {
-            System.out.println(board.getTitle());
-            System.out.println(board.getContent());
-        }
+        List<Board> boardList = boardRepository.findAll();
+        System.out.println(("userId : " + boardList.get(0).getUser().getId()));
+        System.out.println(("userId : " + boardList.get(0).getUser().getId()));
+        System.out.println("=================================");
+
+        
+        // eye
+        System.out.println("2. 레이지 로딩");
+        System.out.println("username : " + boardList.get(0).getUser().getUsername());
+        System.out.println("username : " + boardList.get(1).getUser().getUsername());
+        System.out.println("username : " + boardList.get(2).getUser().getUsername());
+        System.out.println("username : " + boardList.get(3).getUser().getUsername());
+        System.out.println("username : " + boardList.get(3).getUser().getUsername());
+        System.out.println("username : " + boardList.get(3).getUser().getUsername());
+
+
     }
 
 

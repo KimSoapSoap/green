@@ -80,6 +80,8 @@ public class BoardController {
     @GetMapping("/board/{id}")
     public String detail(@PathVariable("id") Integer id, HttpServletRequest request) {
         Board board = boardRepository.findById(id);
+
+        //inner join하고 와서 user객체 정보도 가지고 있으므로 user에 접근하려면 model.user로 접근하면 된다
         request.setAttribute("model", board);
         return "board/detail";
     }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
@@ -24,6 +25,8 @@ public class User {
     private String password;
     @Column(nullable = false)
     private String email;
+
+    @CreationTimestamp  //날짜가 null인 경우 현재 날짜를 넣어줌
     private Timestamp createdAt;
 
 
@@ -35,5 +38,17 @@ public class User {
         this.password = password;
         this.email = email;
         this.createdAt = createdAt;
+    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

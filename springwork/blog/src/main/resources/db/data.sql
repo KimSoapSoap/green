@@ -18,4 +18,3 @@ values ('제목4', '내용4', now(), 2);
 insert into board_tb(title, content, created_at, user_id)
 values ('제목5', '내용5', now(), 3);
 
-

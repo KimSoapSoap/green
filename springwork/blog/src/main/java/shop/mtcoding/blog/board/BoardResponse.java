@@ -17,6 +17,18 @@ public class BoardResponse {
         private Boolean isOwner;
         private UserDTOV2 user;
 
+        public DetailDTOV2(Board board, User sessionUser) {
+            this.id = board.getId();
+            this.title = board.getTitle();
+            this.content = board.getContent();
+            this.isOwner = false;
+
+            if (board.getUser().getId() == sessionUser.getId()) {
+                this.isOwner = true;
+            }
+            this.user = new UserDTOV2(board.getUser());
+        }
+
 
         @Data
         public class UserDTOV2 {

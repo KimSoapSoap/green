@@ -81,7 +81,7 @@ public class BoardController {
 
         List<Board> boardList = boardRepository.findAll();
         request.setAttribute("models", boardList);
-        System.out.println(boardList);
+
         return "board/list";
     }
 
@@ -97,7 +97,8 @@ public class BoardController {
         //request.setAttribute("isOwner", false);
         User sessionUser = (User) session.getAttribute("sessionUser");
         BoardResponse.DetailDTO detailDTO = boardService.상세보기(id, sessionUser);
-        request.setAttribute("models", detailDTO);
+        request.setAttribute("model", detailDTO);
+        System.out.println(detailDTO);
         return "board/detail";
     }
 

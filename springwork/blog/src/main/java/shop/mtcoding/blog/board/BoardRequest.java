@@ -11,7 +11,7 @@ public class BoardRequest {
         private String content;
 
 
-        //insert 할 때는 toEntity()를 만들어 준다.
+        //insert 할 때는 toEntity()를 만들어 준다. -> 영속화
         public Board toEntity(User sessionUser) {
             return Board.builder()
                     .title(title)

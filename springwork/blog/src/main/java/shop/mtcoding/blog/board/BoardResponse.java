@@ -63,6 +63,18 @@ public class BoardResponse {
             this.username = board.getUser().getUsername();
 
         }
+
+        @Override
+        public String toString() {
+            return "DetailDTO{" +
+                    "boardId=" + boardId +
+                    ", title='" + title + '\'' +
+                    ", content='" + content + '\'' +
+                    ", isOwner=" + isOwner +
+                    ", userId=" + userId +
+                    ", username='" + username + '\'' +
+                    '}';
+        }
     }
 
 

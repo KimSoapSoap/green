@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.user.User;
 
 import java.sql.Timestamp;
@@ -27,6 +28,7 @@ public class Board {
     private String title;
     @Column(nullable = false)
     private String content;
+    @CreationTimestamp
     private Timestamp createdAt;
 
     /*
@@ -43,11 +45,12 @@ public class Board {
 
     //빌더패턴 적용. 필요한 멤버변수 모두 선택한 후 생성자 만들어서 @Builder 붙인다.
     @Builder
-    public Board(Integer id, String title, String content, Timestamp createdAt) {
+    public Board(Integer id, String title, String content, Timestamp createdAt, User user) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
+        this.user = user;
     }
 
     @Override

@@ -1,26 +1,25 @@
 package shop.mtcoding.blog.board;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.mtcoding.blog.user.User;
 
 import java.util.List;
 
 // 식별자 요청 받기, 응답하기 (이 클래스의 책임)
+@RequiredArgsConstructor
 @Controller //식별자 요청을 받을 수 있다.
 public class BoardController {
 
-    @Autowired
-    private final BoardRepository boardRepository;
 
-
-    public BoardController(BoardRepository boardRepository) {
-        //System.out.println("Controller 생성자");
-        this.boardRepository = boardRepository;
-    }
+    private final BoardService boardService;
+    private final BoardRepository boardRepository; //서비스 계층을 만들면 boardRepository가 아니라 Service를 의존
+    private final HttpSession session; //스프링이 서버 시작시에 편의성을 위해 HttpSession을 생성해서 IoC 컨테이너에 올려놨기 때문에 주입 가능
 
 
     // url : https://localhost:8080/board/1/update
@@ -41,13 +40,25 @@ public class BoardController {
         return "redirect:/board";
     }
 
-
+    // 매핑 주소로  /board/save 에서 save를 붙인 것은 HTTP 1.0으로 만들었기 때문입니다.
+    // 1.0에는 GET, POST밖에 없기 때문에 POST로 insert, update, delete를 모두 만들었기 때문에 save를 붙여서 구별해줬습니다.
+    // 1.1에는 PUT, DELETE가 나와서 이때는 같은 주소로 POST PUT DELETE 로  insert update delete
     @PostMapping("/board/save")
-    public String save(String title, String content) {  //스프링 기본전략 = x-www-form-urlencoded 파싱
+    public String save(BoardRequest.SaveDTO saveDTO) {  //스프링 기본전략 = x-www-form-urlencoded 파싱
 
-        System.out.println(title);
-        System.out.println(content);
-        boardRepository.save(title, content);
+//        System.out.println(title);
+//        System.out.println(content);
+//        boardRepository.save(title, content);
+
+        User sessionUser = (User) session.getAttribute("sessionUser");
+
+        // session 유저 꺼내서 검증 필요함. 통과하면 저장
+        // 모든 검증을 하나로 모아서 할 것이기 때문에 if-else로 오류페이지로 보내고 하지 말자
+        if (sessionUser == null) {
+            throw new RuntimeException("로그인이 필요합니다.");
+        }
+
+        boardRepository.save(saveDTO.toEntity(sessionUser));
         return "redirect:/board";
     }
 
@@ -70,6 +81,7 @@ public class BoardController {
 
         List<Board> boardList = boardRepository.findAll();
         request.setAttribute("models", boardList);
+        System.out.println(boardList);
         return "board/list";
     }
 
@@ -78,10 +90,14 @@ public class BoardController {
     // 3. 응답 : board/detail
     @GetMapping("/board/{id}")
     public String detail(@PathVariable("id") Integer id, HttpServletRequest request) {
-        Board board = boardRepository.findById(id);
-
+        // Board board = boardRepository.findById(id);
         //inner join하고 와서 user객체 정보도 가지고 있으므로 user에 접근하려면 model.user로 접근하면 된다
-        request.setAttribute("model", board);
+        // request.setAttribute("model", board);
+        //boolean 값을 하나 만들었다. -> 게시글 상세보기에서 권한확인을 위해 수정/삭제버튼을 이 값을 일단 넣어둠
+        //request.setAttribute("isOwner", false);
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        BoardResponse.DetailDTO detailDTO = boardService.상세보기(id, sessionUser);
+        request.setAttribute("models", detailDTO);
         return "board/detail";
     }
 
@@ -111,5 +127,22 @@ public class BoardController {
     //	자바 메서드 이름은 camelCase를 사용한다
     //	일종의 개발자들 간 컨벤션(Convention)으로 약속이다
 
+
+    //LAZY 테스트
+    //application.properties에서
+    //spring.jpa.open-in-view=false   옵션을 true로 하면 LAZY로딩 발생, false로 하면 LAZY로딩 발생하지 않음
+    //false면 request가 응답 나가기 전 Controller 에서는 Connection(DB접근 권한)을 가지고 있지 않다.(Service -> Controller 갈 때 Connection 끊어줌
+    //true면 request가 응답 나가기 전 Controller에서도 Connection을 가지고 있기 때문에 DB에 접근 가능하다. 이때 return시 불필요한 조회가 일어날 수 있기 때문에
+    //OIV를 false로 해준다.
+    //아래 예시에서는 true로 하면 Board게시판 조회 findAll()을 했는데 (우리는 게시판 목록에 글쓴이 정보가 없다는 것을 상기해야 한다) 불필요한 User를 조회해버린다
+    //false로 하면 나가갈 때 Service가 Connection을 끊어줘서 나갈 때 request는 Controller에서 Connection이 없기 때문에 Controller에서 불필요한 조회를 차단
+    // LazyInitializationException 발생
+    @GetMapping("/test/board/1")
+    public void testBoard() {
+        List<Board> boardList = boardRepository.findAll();
+        System.out.println("-------------------start----------------------");
+        System.out.println(boardList.get(2).getUser().getPassword());
+        System.out.println("--------------------end----------------------");
+    }
 
 }

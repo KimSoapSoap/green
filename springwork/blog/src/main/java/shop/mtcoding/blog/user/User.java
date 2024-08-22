@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+<<<<<<< HEAD
+=======
+import org.hibernate.annotations.CreationTimestamp;
+>>>>>>> sub
 
 import java.sql.Timestamp;
 
@@ -24,6 +28,11 @@ public class User {
     private String password;
     @Column(nullable = false)
     private String email;
+<<<<<<< HEAD
+=======
+
+    @CreationTimestamp  //날짜가 null인 경우 현재 날짜를 넣어줌
+>>>>>>> sub
     private Timestamp createdAt;
 
 
@@ -36,4 +45,19 @@ public class User {
         this.email = email;
         this.createdAt = createdAt;
     }
+<<<<<<< HEAD
+=======
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+>>>>>>> sub
 }

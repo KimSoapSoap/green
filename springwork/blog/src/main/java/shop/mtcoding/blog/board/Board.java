@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import shop.mtcoding.blog.user.User;
 
 import java.sql.Timestamp;
 
@@ -26,16 +28,29 @@ public class Board {
     private String title;
     @Column(nullable = false)
     private String content;
+    @CreationTimestamp
     private Timestamp createdAt;
+
+    /*
+    //Board테이블에 foreign key로 User를 추가해준다.
+    private Integer userId;
+    // 원래는 이렇게 만드는데 Hibernate에서는 다르다.
+    // 실제로 이렇게 만들어도 테이블에는 camelCase가 적용 안 돼서 board_tb에 user_id라는 컬럼으로 만들어진다.
+    */
+
+    //Board가 N, User가 1
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
 
     //빌더패턴 적용. 필요한 멤버변수 모두 선택한 후 생성자 만들어서 @Builder 붙인다.
     @Builder
-    public Board(Integer id, String title, String content, Timestamp createdAt) {
+    public Board(Integer id, String title, String content, Timestamp createdAt, User user) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
+        this.user = user;
     }
 
     @Override

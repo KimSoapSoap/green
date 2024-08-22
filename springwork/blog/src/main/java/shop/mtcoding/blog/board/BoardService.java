@@ -28,7 +28,7 @@ public class BoardService {
             isOwner = true;
 
         }*/
-
+ 
 
         return new BoardResponse.DetailDTO(board, sessionUser);
 

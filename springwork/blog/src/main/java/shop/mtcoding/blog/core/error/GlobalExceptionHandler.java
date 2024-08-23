@@ -11,10 +11,11 @@ public class GlobalExceptionHandler {
 
     //@ExceptionHandler(A.class)  -> A예외를 처리한다
 
+    //ExceptionHander(A.class)로 맵핑해서 원하는 예외를 캐치했으면 메서드에서는 매개변수로는 그냥 최상위 Exception으로 받아주면 된다.
+
     //유효성 검사 실패 (잘못된 클라이언트의 요청).  바디 데이터가 잘못 들어 왔을 때
     @ExceptionHandler(Exception400.class)
-    //ExceptionHander(A.class)로 맵핑해서 원하는 예외를 캐치했으면 메서드에서는 매개변수로는 그냥 최상위 Exception으로 받아주면 된다.
-    //
+    
     public String ex400(Exception e) {
         //util 패키지의 Script 클래스를 만들어놓고 에러메시지를 전달하면서 뒤로가기 back() 메서드 호출
         return Script.back(e.getMessage());

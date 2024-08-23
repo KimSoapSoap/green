@@ -19,7 +19,5 @@ public class BoardRequest {
                     .user(sessionUser)
                     .build();
         }
-
     }
-
 }

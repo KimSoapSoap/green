@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class UserController {
 
-
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final HttpSession session;    //HttpSession은 스프링 시작시에 Ioc에(빈 컨테이너) 생성돼서 대기중이다. @Autowired로 주입
 
 
@@ -26,7 +25,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(UserRequest.LoginDTO loginDTO) {
-        User sessionUser = userRepository.findByUsernameAndPassword(loginDTO.getUsername(), loginDTO.getPassword());
+        User sessionUser = userService.로그인(loginDTO);
         session.setAttribute("sessionUser", sessionUser);
         return "redirect:/board";
     }
@@ -34,7 +33,7 @@ public class UserController {
 
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO joinDTO) {
-        userRepository.save(joinDTO.toEntity());
+        userService.회원가입(joinDTO);
         return "redirect:/login-form";
     }
 

@@ -6,6 +6,7 @@ import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import shop.mtcoding.blog.core.error.ex.Exception404;
 import shop.mtcoding.blog.user.User;
 
 import java.sql.Timestamp;
@@ -77,7 +78,7 @@ public class BoardRepository {
             // Spring에서는 DispatcherServlet에서 전체적으로 처리하는 방식으로 해보자.
             // 참고로  try - catch는 직접 처리하는 것. 계속 던지다 보면 최종적으로는 JVM이 처리
             e.printStackTrace();  //오류 추적
-            throw new RuntimeException("게시글 id를 찾을 수 없습니다.");
+            throw new Exception404("게시글 id를 찾을 수 없습니다.");
         }
     }
 

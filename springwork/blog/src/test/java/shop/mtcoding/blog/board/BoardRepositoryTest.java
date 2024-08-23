@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import shop.mtcoding.blog.core.error.ex.Exception403;
+import shop.mtcoding.blog.core.error.ex.Exception404;
+import shop.mtcoding.blog.user.User;
 
 import java.util.List;
 
@@ -19,6 +22,32 @@ public class BoardRepositoryTest {
     @Autowired
     private BoardRepository boardRepository;
 
+
+    @Test
+    public void 게시글삭제() {
+        //given
+        int id = 1;
+        User sessionUser = User.builder().id(1).build();
+
+        //when
+        //db에 게시글 존재여부 확인 (없으면 404에러 던짐)
+        Board board = boardRepository.findById(id);
+        if (board == null) {
+            throw new Exception404("존재하지 않는 게시글입니다.");
+        }
+        //내가 쓴 글인지 확인하기 (403에러. 권한없음)
+        if (board.getUser().getId() != sessionUser.getId()) {
+            throw new Exception403("작성자가 아닙니다.");
+        }
+        //게시글 삭제
+        boardRepository.deleteById(id);
+        //then
+        try {
+            boardRepository.findById(id);
+        } catch (Exception e) {
+            Assertions.assertThat(e.getMessage()).isEqualTo("게시글 id를 찾을 수 없습니다.");
+        }
+    }
 
     @Test
     public void updateById_test() {
@@ -89,7 +118,7 @@ public class BoardRepositoryTest {
         System.out.println(("userId : " + boardList.get(0).getUser().getId()));
         System.out.println("=================================");
 
-        
+
         // eye
         System.out.println("2. 레이지 로딩");
         System.out.println("username : " + boardList.get(0).getUser().getUsername());
@@ -116,7 +145,7 @@ public class BoardRepositoryTest {
 
         // when
         //여기서 테스트한다.
-        boardRepository.save(title, content);
+        // boardRepository.save(title, content);
 
 
         // eye (눈으로 확인)

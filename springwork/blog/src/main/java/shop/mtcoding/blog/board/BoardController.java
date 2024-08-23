@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.mtcoding.blog.core.error.ex.Exception401;
 import shop.mtcoding.blog.user.User;
 
 import java.util.List;
@@ -18,7 +19,6 @@ public class BoardController {
 
 
     private final BoardService boardService;
-    private final BoardRepository boardRepository; //서비스 계층을 만들면 boardRepository가 아니라 Service를 의존
     private final HttpSession session; //스프링이 서버 시작시에 편의성을 위해 HttpSession을 생성해서 IoC 컨테이너에 올려놨기 때문에 주입 가능
 
 
@@ -27,7 +27,11 @@ public class BoardController {
     // conent-type : x-www-form-urlencoded
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable("id") int id, String title, String content) {
-        boardRepository.updatdById(title, content, id);
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if (sessionUser == null) {
+            throw new Exception401("로그인이 필요합니다.");
+        }
+        boardService.게시글수정(title, content, id);
         return "redirect:/board/" + id;
 
     }
@@ -36,7 +40,13 @@ public class BoardController {
     @PostMapping("/board/{id}/delete")
     public String delete(@PathVariable("id") int id) {
         //원래는 검증을 하고 지워야 되지만 V1에서는 그냥 바로 삭제한다.
-        boardRepository.deleteById(id);
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        //로그인 체크정도는 컨트롤러에서 검증을 해준다.
+        //이걸 서비스 넘어가서 권한체크를 하면 불필요한 트랜잭션이 걸린다
+        if (sessionUser == null) {
+            throw new Exception401("로그인이 필요합니다.");
+        }
+        boardService.게시글삭제(id, sessionUser);
         return "redirect:/board";
     }
 
@@ -45,6 +55,9 @@ public class BoardController {
     // 1.1에는 PUT, DELETE가 나와서 이때는 같은 주소로 POST PUT DELETE 로  insert update delete
     @PostMapping("/board/save")
     public String save(BoardRequest.SaveDTO saveDTO) {  //스프링 기본전략 = x-www-form-urlencoded 파싱
+        //SaveDTO를 받을 수 있는 것은 우리는 글작성 페이지에서 title과 content 정보를 POST로 보내는데
+        // @ModelAttribute가 이 전달되는 title과 content를 필드로 가지고 있는 객체가 있다면 해당 객체를 매개변수로 설정할 때
+        // 자동으로 매핑 해준다. 이 SaveDTO는 우리가 title과 content를 멤버변수로 만든 객체이므로 가능
 
 //        System.out.println(title);
 //        System.out.println(content);
@@ -55,10 +68,10 @@ public class BoardController {
         // session 유저 꺼내서 검증 필요함. 통과하면 저장
         // 모든 검증을 하나로 모아서 할 것이기 때문에 if-else로 오류페이지로 보내고 하지 말자
         if (sessionUser == null) {
-            throw new RuntimeException("로그인이 필요합니다.");
+            throw new Exception401("로그인이 필요합니다.");
         }
 
-        boardRepository.save(saveDTO.toEntity(sessionUser));
+        boardService.게시글쓰기(saveDTO, sessionUser);
         return "redirect:/board";
     }
 
@@ -79,7 +92,7 @@ public class BoardController {
     //request는 응답이 나가기 전까지만 정보가 유지되기 때문인데 이때 정보를 유지해야 된다면 session을 사용한다.
     public String list(HttpServletRequest request) {  // Controller에서 return하면 검색하는 기본 파일 경로는 templates 디렉토리다
 
-        List<Board> boardList = boardRepository.findAll();
+        List<Board> boardList = boardService.게시글목록보기();
         request.setAttribute("models", boardList);
 
         return "board/list";
@@ -117,7 +130,7 @@ public class BoardController {
     //{id}는 정규표현식인데 @PathVariable이 이를 받아준다.
     @GetMapping("/board/{id}/update-form")
     public String updateForm(@PathVariable("id") int id, HttpServletRequest request) {
-        Board board = boardRepository.findById(id);
+        Board board = boardService.게시글수정화면(id);
         request.setAttribute("model", board);
         return "board/update-form";
     }
@@ -140,7 +153,7 @@ public class BoardController {
     // LazyInitializationException 발생
     @GetMapping("/test/board/1")
     public void testBoard() {
-        List<Board> boardList = boardRepository.findAll();
+        List<Board> boardList = boardService.게시글목록보기();
         System.out.println("-------------------start----------------------");
         System.out.println(boardList.get(2).getUser().getPassword());
         System.out.println("--------------------end----------------------");

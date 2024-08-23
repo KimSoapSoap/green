@@ -108,7 +108,11 @@ public class BoardController {
         // request.setAttribute("model", board);
         //boolean 값을 하나 만들었다. -> 게시글 상세보기에서 권한확인을 위해 수정/삭제버튼을 이 값을 일단 넣어둠
         //request.setAttribute("isOwner", false);
+
         User sessionUser = (User) session.getAttribute("sessionUser");
+        if (sessionUser == null) {
+            sessionUser = User.builder().username("비회원").build();
+        }
         BoardResponse.DetailDTOV2 detailDTOV2 = boardService.상세보기(id, sessionUser);
         request.setAttribute("model", detailDTOV2);
 

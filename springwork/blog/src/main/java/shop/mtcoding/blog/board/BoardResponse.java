@@ -11,6 +11,7 @@ public class BoardResponse {
     //V2에서는 외래키은 User테이블의 정보는 UserDTO를 내부에 만들어서 담아줬다.
     @Data
     public static class DetailDTOV2 {
+        
         private Integer id;
         private String title;
         private String content;
@@ -23,8 +24,12 @@ public class BoardResponse {
             this.content = board.getContent();
             this.isOwner = false;
 
-            if (board.getUser().getId() == sessionUser.getId()) {
-                this.isOwner = true;
+            //로그인 안 했는데 sessionUser로 권한체크 하니까 비로그인시 상세보기 했을 때 sessionUser에서 nullPointer
+            //그래서 sessionUser != null 조건 추가
+            if (sessionUser != null) {
+                if (board.getUser().getId() == sessionUser.getId()) {
+                    this.isOwner = true;
+                }
             }
             this.user = new UserDTOV2(board.getUser());
         }
@@ -67,8 +72,12 @@ public class BoardResponse {
             this.content = board.getContent();
             this.isOwner = false;
 
-            if (board.getUser().getId() == sessionUser.getId()) {
-                this.isOwner = true;
+            //로그인 안 했는데 sessionUser로 권한체크 하니까 비로그인시 상세보기 했을 때 sessionUser에서 nullPointer
+            //그래서 sessionUser != null 조건 추가
+            if (sessionUser != null) {
+                if (board.getUser().getId() == sessionUser.getId()) {
+                    this.isOwner = true;
+                }
             }
 
             this.userId = board.getUser().getId();

@@ -1,10 +1,13 @@
 package shop.mtcoding.blog.user;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.mtcoding.blog.core.Hello;
 
 @RequiredArgsConstructor  // final이 붙은 멤버 변수들을 생성자 주입 해준다.
 @Controller
@@ -19,15 +22,15 @@ public class UserController {
 
         //세션ID값을 가지고 쿠키를 찾아서 쿠키를 날려 버린다.
         session.invalidate();
-        return "redirect:/board";
+        return "redirect:/";
     }
 
 
     @PostMapping("/login")
-    public String login(UserRequest.LoginDTO loginDTO) {
+    public String login(@Valid UserRequest.LoginDTO loginDTO, Errors errors) {
         User sessionUser = userService.로그인(loginDTO);
         session.setAttribute("sessionUser", sessionUser);
-        return "redirect:/board";
+        return "redirect:/";
     }
 
 
@@ -43,6 +46,7 @@ public class UserController {
         return "user/join-form";
     }
 
+    @Hello
     @GetMapping("/login-form")
     public String loginForm() {
         return "user/login-form";

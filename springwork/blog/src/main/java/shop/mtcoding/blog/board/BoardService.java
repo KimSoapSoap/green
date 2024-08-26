@@ -23,17 +23,42 @@ public class BoardService {
     }
 
     @Transactional
-    public void 게시글수정(String title, String content, int id) {
+    public void 게시글수정(int id, BoardRequest.UpdateDTO updateDTO, User sessionUser) {
         //유효성 검사, null뜨면 repository의 findById()에서 처리
+        // 1. 게시글 조회 (없으면 404)
         Board board = boardRepository.findById(id);
+        //em.find로 찾은 것이 아니어도 영속성 컨텍스트에 들어가나?
 
+        // 2. 권한 체크
+        if (board.getUser().getId() != sessionUser.getId()) {
+            throw new Exception403("게시글을 수정할 권한이 없습니다.");
+        }
 
-        boardRepository.updatdById(title, content, id);
+        // 3. 게시글 수정
+        board.setTitle(updateDTO.getTitle());
+        board.setContent(updateDTO.getContent());
+
+        //트랜잭션이 commit되면 flush()를 날려서 영속 객체에 변경사항이 있으면(dirty checking) 쿼리를 날린다.
+        //em.persist하거나 em.find로 꺼내면 영속 컨텍스트에 저장돼서 영속 객체상태이다
+        //처음 영속 객체로 저장될 때의 상태를 스냅샷에 정보를 저장하는데 flush()를 할 때 스냅샷에 저장된 정보와
+        //현재 영속 객체의 정보를 비교해서 변경사항이 있으면
+        // persist로 영속화 된 객체는 변경된 녀석으로 insert쿼리가 날아가고
+        // 조회해서 영속화 된 객체는 변경된 녀석으로 update쿼리가 날아간다.
+
+        //한 트랜잭션 과정 안에서 무언가를 조회했을 때 찾는 녀석이 영속성 컨텍스트에 저장돼 있으면 db에서 조회하지 않고 저장된 걸 반환한다
+        //em.find()로 조회해야 db에서 꺼낸 녀석을 영속성 컨텍스트에 저장하고 그냥 repository에서 직접 꺼냈을 때는 영속성 컨텍스트에 저장되지 않는다
 
     }
 
-    public Board 게시글수정화면(int id) {
-        return boardRepository.findById(id);
+    public Board 게시글수정화면가기(int id, User sessionUser) {
+        Board board = boardRepository.findById(id);
+
+        //수정할 권한이 있는지 권한체크
+        if (board.getUser().getId() != sessionUser.getId()) {
+            throw new Exception403("게시글을 수정할 권한이 없습니다.");
+        }
+
+        return board;
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.board;
 
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,30 @@ public class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private EntityManager em;
+
+    @Test
+    public void updateByIdV2_Test() {
+        //given
+        int id = 1;
+        Board board = boardRepository.findById(id);
+
+        //when
+        board.setTitle("제목10");
+        board.setContent("내용10");
+
+
+        //트랜잭션이 commit되면 flush()를 날려서 영속 객체에 변경사항이 있으면(dirty checking) 쿼리를 날린다.
+        //em.persist하거나 em.find로 꺼내면 영속 컨텍스트에 저장돼서 영속 객체상태이다
+        //처음 영속 객체로 저장될 때의 상태를 스냅샷에 정보를 저장하는데 flush()를 할 때 스냅샷에 저장된 정보와
+        //현재 영속 객체의 정보를 비교해서 변경사항이 있으면
+        // persist로 영속화 된 객체는 변경된 녀석으로 insert쿼리가 날아가고
+        // 조회해서 영속화 된 객체는 변경된 녀석으로 update쿼리가 날아간다.
+        em.flush();
+
+    }
 
 
     @Test

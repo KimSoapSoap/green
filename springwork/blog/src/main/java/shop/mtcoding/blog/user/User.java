@@ -30,7 +30,7 @@ public class User {
     private Timestamp createdAt;
 
 
-    //빌더는 만들어 두는 것이 좋다
+    //객체 생성 편하게 하기 위해. DTO 편하게 만들 때도 좋음
     @Builder
     public User(Integer id, String username, String password, String email, Timestamp createdAt) {
         this.id = id;

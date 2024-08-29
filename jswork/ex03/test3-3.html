@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        #innerBox1 {
+            display: none;
+        }
+
+        #innerBox2 {
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>나타내기</h1>
+    <button onclick="showByDisplay()">display로 나타내기</button>
+    <button onclick="showByVisible()">visible로 나타내기</button>
+    <div class="box" id="outerBox">
+        <div class="box" id="innerBox1">
+            내부박스1
+        </div>
+        <div class="box" id="innerBox2">
+            내부박스2
+        </div>
+    </div>
+    <script>
+        function showByDisplay() {
+            let el = document.querySelector("#innerBox1");
+            el.style.display = "block";
+        }
+        function showByVisible() {
+            let el = document.querySelector("#innerBox2");
+            el.style.visibility = "visible";
+        }
+    </script>
+</body>
+
+</html>

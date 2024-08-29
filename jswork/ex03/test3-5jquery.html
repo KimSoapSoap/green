@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .card {
+            border: 1px solid lightgray;
+            box-shadow: 0 4px 4px 0 grey;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>반복문으로 리스트 만들기</h1>
+    <button onclick="render()">render</button>
+    <div class="box" id="outerBox">
+    </div>
+    <script>
+        // 1. 그림그리기
+        function render() {
+            for (let i = 1; i < 5; i++) {
+                $("#outerBox").append(makeCard(i));
+            }
+        }
+        // 2. DOM 만들기
+        function makeCard(id) {
+            return `<div id="card-${id}" class="card">
+                        <h3>제목${id} 입니다</h3>
+                        <p>내용${id} 입니다</p>
+                        <button onclick="del(${id})">삭제</button>
+                    </div>`;
+        }
+        function del(id) {
+            $(`#card-${id}`).remove();
+        }
+    </script>
+</body>
+
+</html>

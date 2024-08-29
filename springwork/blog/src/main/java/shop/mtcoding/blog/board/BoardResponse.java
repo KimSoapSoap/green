@@ -11,7 +11,7 @@ public class BoardResponse {
     //V2에서는 외래키은 User테이블의 정보는 UserDTO를 내부에 만들어서 담아줬다.
     @Data
     public static class DetailDTOV2 {
-        
+
         private Integer id;
         private String title;
         private String content;
@@ -85,17 +85,7 @@ public class BoardResponse {
 
         }
 
-        @Override
-        public String toString() {
-            return "DetailDTO{" +
-                    "boardId=" + boardId +
-                    ", title='" + title + '\'' +
-                    ", content='" + content + '\'' +
-                    ", isOwner=" + isOwner +
-                    ", userId=" + userId +
-                    ", username='" + username + '\'' +
-                    '}';
-        }
+
     }
 
 

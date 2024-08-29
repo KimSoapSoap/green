@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <button id="myBtn">Click me</button>
+    <script>
+        $("#myBtn").on("dblclick", function () {
+            alert("Hello World!");
+        });
+    </script>
+
+
+
+    <button onclick="alert('Hello World!')">Click me</button>
+    <button id="myBtn2">Click me</button>
+    <script>
+        const myBtn = document.querySelector("#myBtn2");
+        myBtn.addEventListener("click", function () {
+            alert("Hello World!");
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div id="root">
+
+    </div>
+    <script>
+        function makeDom() {
+            return `<div>그림</div>`;
+        }
+
+        async function download() {  //비동기로 실행되어야 함
+            //fetch는 기본적으로 비동기다.오래걸리는 작업은 response한테 promise라는 객체를 준다. 기다렸다 주면 늦으므로.
+            //그런데 우리는 promise를 받지 않을 거다. 내용없는 promise 받아봐야 뭘 하겠음.
+            //그래서 함수 앞에 async를 붙이고 fetch 앞에 await를 붙여준다.(일종의 체크포인트) 비동기로 작업 끝나면 response가 결과를 받는다.
+            //그리고 response.json()을 해서 자바스크립트 객체로 파싱해주는데 이것도 시간 걸릴 수 있으므로 앞에 await 붙여 준다
+            //함수 앞에는 async를 붙이고 그 내부에 시간 걸릴 것 같은 곳 앞에는 await를 붙인다
+            /*
+            let response = await fetch({
+                method: "get",
+                url: "http://192.168.0.99:8080/test"
+            });
+            */
+            //get 요청은 method 생략 가능 -> fetch("http://192.168.0.99:8080/test")
+            let response = await fetch("http://192.168.0.99:8080/test")
+
+            let data = await response.json();
+            $("#root").append(`<div>${data.body}</div>`);
+
+        }
+
+        function download2() {  //비동기로 실행되어야 함
+            //then then 방식인데 그냥 async await 쓰자
+            let response = fetch("http://192.168.0.99:8080/test")
+                .then(res => res.json())
+                .then(res => {
+                    $("#root").append(`<div>${data.body}</div>`);
+                });
+
+        }
+
+        $("#root").append(makeDom());
+        $("#root").append(makeDom());
+        download();
+        $("#root").append(makeDom());
+    </script>
+</body>
+
+</html>

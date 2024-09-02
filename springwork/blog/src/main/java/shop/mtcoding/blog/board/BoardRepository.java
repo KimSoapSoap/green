@@ -5,7 +5,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.error.ex.Exception404;
 import shop.mtcoding.blog.user.User;
 
@@ -25,7 +24,6 @@ public class BoardRepository {
     private final EntityManager em; //IoC에 있는 객체를 찾아 온다. (EntityManager도 생성되어 IoC에 떠 있는 상태)
 
 
-    @Transactional
     public void updatdById(String title, String content, int id) {
         Query query = em.createNativeQuery("update board_tb set title = ?, content = ? where id = ?");
         query.setParameter(1, title);
@@ -36,7 +34,6 @@ public class BoardRepository {
     }
 
 
-    @Transactional
     public int deleteById(int id) {
         Query query = em.createNativeQuery("delete from board_tb where id= ?");
         query.setParameter(1, id);
@@ -98,7 +95,7 @@ public class BoardRepository {
 
 
     // insert 하기
-    @Transactional  //동시 요청이 발생했을 때 누가 insert 트랜잭션을 실행중일 때 insert 하지 못하며 중간에 read 요청이 왔을 때는 트랜잭션 이전의 데이터를 보여주는 것
+    //동시 요청이 발생했을 때 누가 insert 트랜잭션을 실행중일 때 insert 하지 못하며 중간에 read 요청이 왔을 때는 트랜잭션 이전의 데이터를 보여주는 것
     public void save(Board board) {
         //em이 쿼리를 db에 전송
 

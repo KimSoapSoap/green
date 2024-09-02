@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.core.error.ex.Exception401;
 
 @RequiredArgsConstructor
@@ -47,7 +46,6 @@ public class UserRepository {
     }
 
 
-    @Transactional
     public void save(User user) {
         //Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 

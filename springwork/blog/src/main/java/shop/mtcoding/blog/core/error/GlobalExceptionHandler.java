@@ -2,28 +2,52 @@ package shop.mtcoding.blog.core.error;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import shop.mtcoding.blog.core.error.ex.*;
+import shop.mtcoding.blog.core.util.Script;
 
 //모든 Exception이 여기로 날아오는 어노테이션
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     //@ExceptionHandler(A.class)  -> A예외를 처리한다
-    @ExceptionHandler(RuntimeException.class)
+
+    //ExceptionHander(A.class)로 맵핑해서 원하는 예외를 캐치했으면 메서드에서는 매개변수로는 그냥 최상위 Exception으로 받아주면 된다.
+
+    //유효성 검사 실패 (잘못된 클라이언트의 요청).  바디 데이터가 잘못 들어 왔을 때
+    @ExceptionHandler(Exception400.class)
+    
+    public String ex400(Exception e) {
+        //util 패키지의 Script 클래스를 만들어놓고 에러메시지를 전달하면서 뒤로가기 back() 메서드 호출
+        return Script.back(e.getMessage());
+    }
+
+    //인증 실패 (클라이언트가 인증 없이 요청했거나, 인증을 하거나 실패했거나)
+    @ExceptionHandler(Exception401.class)
+    public String ex401(Exception e) {
+        return Script.href("인증되지 않았습니다.", "/login-form");
+    }
+
+    // 권한 실패 (인증은 되어 있는데, 삭제하려는 게시글이 내가 적은 게 아니다.
+    @ExceptionHandler(Exception403.class)
+    public String ex403(Exception e) {
+        return Script.back(e.getMessage());
+    }
+
+    // 서버에서 리소스(자원) 찾을 수 없을때
+    @ExceptionHandler(Exception404.class)
+    public String ex404(Exception e) {
+        return Script.back(e.getMessage());
+    }
+
+    // 서버에서 심각한 오류가 발생했을 때 (알고 있을 때)
+    @ExceptionHandler(Exception500.class)
+    public String ex500(Exception e) {
+        return Script.back(e.getMessage());
+    }
+
+    // 서버에서 심각한 오류가 발생했을 때(모를 때)
+    @ExceptionHandler(Exception.class)
     public String ex(Exception e) {
-
-        // Exception이 예외의 최상위 부모이므로 모든 예외를 다 잡는다.
-        // 예외가 터지면 Exception e를 받아서 설정해둔 에러메시지를 받아서 사용
-        String errMsg = """                
-                <script>
-                    alert('$msg'); 
-                    history.back();
-                </script>
-                """.replace("$msg", e.getMessage());
-
-        // 자바스크립트로 우리가 정한 에러메시지로 alert를 띄워준다.
-        // 자바스크립트의 history.back()은 뒤로가기
-        return errMsg;
-
-
+        return Script.back(e.getMessage());
     }
 }

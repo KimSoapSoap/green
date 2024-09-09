@@ -3,11 +3,14 @@ package shop.mtcoding.blog.board;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.mtcoding.blog.core.Hello;
 import shop.mtcoding.blog.user.User;
 
 import java.util.List;
@@ -19,33 +22,47 @@ public class BoardController {
 
 
     private final BoardService boardService;
-    private final BoardRepository boardRepository; //서비스 계층을 만들면 boardRepository가 아니라 Service를 의존
     private final HttpSession session; //스프링이 서버 시작시에 편의성을 위해 HttpSession을 생성해서 IoC 컨테이너에 올려놨기 때문에 주입 가능
 
 
     // url : https://localhost:8080/board/1/update
     // body : title = 제목1변경&content=내용1변경
     // conent-type : x-www-form-urlencoded
-    @PostMapping("/board/{id}/update")
-    public String update(@PathVariable("id") int id, String title, String content) {
-        boardRepository.updatdById(title, content, id);
+    @Hello
+    @PostMapping("/api/board/{id}/update")
+    public String update(@PathVariable("id") int id, @Valid BoardRequest.UpdateDTO updateDTO, Errors errors) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+      /*  if (sessionUser == null) {
+            throw new Exception401("로그인이 필요합니다.");
+        }*/
+        boardService.게시글수정(id, updateDTO, sessionUser);
         return "redirect:/board/" + id;
 
     }
 
 
-    @PostMapping("/board/{id}/delete")
+    @PostMapping("/api/board/{id}/delete")
     public String delete(@PathVariable("id") int id) {
         //원래는 검증을 하고 지워야 되지만 V1에서는 그냥 바로 삭제한다.
-        boardRepository.deleteById(id);
-        return "redirect:/board";
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        //로그인 체크정도는 컨트롤러에서 검증을 해준다.
+        //이걸 서비스 넘어가서 권한체크를 하면 불필요한 트랜잭션이 걸린다
+    /*    if (sessionUser == null) {
+            throw new Exception401("로그인이 필요합니다.");
+        }*/
+        boardService.게시글삭제(id, sessionUser);
+        return "redirect:/";
     }
 
     // 매핑 주소로  /board/save 에서 save를 붙인 것은 HTTP 1.0으로 만들었기 때문입니다.
     // 1.0에는 GET, POST밖에 없기 때문에 POST로 insert, update, delete를 모두 만들었기 때문에 save를 붙여서 구별해줬습니다.
     // 1.1에는 PUT, DELETE가 나와서 이때는 같은 주소로 POST PUT DELETE 로  insert update delete
-    @PostMapping("/board/save")
-    public String save(BoardRequest.SaveDTO saveDTO) {  //스프링 기본전략 = x-www-form-urlencoded 파싱
+    @PostMapping("/api/board/save")
+    //@Valid가 붙어 있으면 DTO가 만들어 질 때 어노테이션을 분석해서 Null이거나 공백이면 Error error로 객체를 넘겨준다.
+    public String save(@Valid BoardRequest.SaveDTO saveDTO, Errors errors) {  //스프링 기본전략 = x-www-form-urlencoded 파싱
+        //SaveDTO를 받을 수 있는 것은 우리는 글작성 페이지에서 title과 content 정보를 POST로 보내는데
+        // @ModelAttribute가 이 전달되는 title과 content를 필드로 가지고 있는 객체가 있다면 해당 객체를 매개변수로 설정할 때
+        // 자동으로 매핑 해준다. 이 SaveDTO는 우리가 title과 content를 멤버변수로 만든 객체이므로 가능
 
 //        System.out.println(title);
 //        System.out.println(content);
@@ -55,16 +72,16 @@ public class BoardController {
 
         // session 유저 꺼내서 검증 필요함. 통과하면 저장
         // 모든 검증을 하나로 모아서 할 것이기 때문에 if-else로 오류페이지로 보내고 하지 말자
-        if (sessionUser == null) {
-            throw new RuntimeException("로그인이 필요합니다.");
-        }
+  /*      if (sessionUser == null) {
+            throw new Exception401("로그인이 필요합니다.");
+        }*/
 
-        boardRepository.save(saveDTO.toEntity(sessionUser));
-        return "redirect:/board";
+        boardService.게시글쓰기(saveDTO, sessionUser);
+        return "redirect:/";
     }
 
     // get, post, put, delete -> 일단 get과 post만 씀. get은 select,  post는 insert, update, delete
-    @GetMapping("/board")
+    @GetMapping("/")   // 인터셉터 추가 후 메인페이지를 /board -> /로 변경했다.
     //매개변수에 HttpServletRequest request를 넣으면 필요한가보다 하고 DispatcherServlet이 리플렉션으로 주입해준다.
     //만약 Board board로 넣어주면 null이 뜬다.  DispatcherServlet은 request와 response만 들고 있기 때문
     //HttpSession session을 넣는다고 하면 DispatcherServlet이 HttpSession은 가지고 있지 않지만
@@ -80,7 +97,7 @@ public class BoardController {
     //request는 응답이 나가기 전까지만 정보가 유지되기 때문인데 이때 정보를 유지해야 된다면 session을 사용한다.
     public String list(HttpServletRequest request) {  // Controller에서 return하면 검색하는 기본 파일 경로는 templates 디렉토리다
 
-        List<Board> boardList = boardRepository.findAll();
+        List<Board> boardList = boardService.게시글목록보기();
         request.setAttribute("models", boardList);
 
         return "board/list";
@@ -96,6 +113,7 @@ public class BoardController {
         // request.setAttribute("model", board);
         //boolean 값을 하나 만들었다. -> 게시글 상세보기에서 권한확인을 위해 수정/삭제버튼을 이 값을 일단 넣어둠
         //request.setAttribute("isOwner", false);
+
         User sessionUser = (User) session.getAttribute("sessionUser");
         BoardResponse.DetailDTOV2 detailDTOV2 = boardService.상세보기(id, sessionUser);
         request.setAttribute("model", detailDTOV2);
@@ -106,8 +124,13 @@ public class BoardController {
     // 1. 메서드 : Get
     // 2. 주소 : /board/save-form
     // 3. 응답 : board/save-form
-    @GetMapping("/board/save-form")
+    @GetMapping("/api/board/save-form")
     public String saveForm() {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+     /*   if (sessionUser == null) {
+            throw new Exception401("인증되지 않았습니다.");
+        }*/
+
         return "board/save-Form";
     }
 
@@ -116,9 +139,15 @@ public class BoardController {
     // 3. 응답 : board/update-form
 
     //{id}는 정규표현식인데 @PathVariable이 이를 받아준다.
-    @GetMapping("/board/{id}/update-form")
+
+    @GetMapping("/api/board/{id}/update-form")
     public String updateForm(@PathVariable("id") int id, HttpServletRequest request) {
-        Board board = boardRepository.findById(id);
+        User sessionUser = (User) session.getAttribute("sessionUser");
+    /*    if (sessionUser == null) {
+            throw new Exception401("인증되지 않았습니다.");
+        }*/
+
+        Board board = boardService.게시글수정화면가기(id, sessionUser);
         request.setAttribute("model", board);
         return "board/update-form";
     }
@@ -141,7 +170,7 @@ public class BoardController {
     // LazyInitializationException 발생
     @GetMapping("/test/board/1")
     public void testBoard() {
-        List<Board> boardList = boardRepository.findAll();
+        List<Board> boardList = boardService.게시글목록보기();
         System.out.println("-------------------start----------------------");
         System.out.println(boardList.get(2).getUser().getPassword());
         System.out.println("--------------------end----------------------");

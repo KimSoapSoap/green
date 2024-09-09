@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .like-heart {
+            font-size: 24px;
+            color: gray;
+            cursor: pointer;
+        }
+
+        .like-heart.liked {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <span class="like-heart" onclick="likeToggle()">&#10084;</span>
+    <script>
+        function likeToggle() {
+
+            // https://www.htmlsymbols.xyz/heart-symbols
+            let likeHeart = document.querySelector('.like-heart');
+            likeHeart.classList.toggle('liked');
+        }
+    </script>
+</body>
+
+</html>

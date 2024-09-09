@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box {
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>추가하기</h1>
+    <button onclick="addAppend()">append로 추가하기</button>
+    <button onclick="addPrepend()">prepend로 추가하기</button>
+    <button onclick="addBefore()">before로 추가하기</button>
+    <button onclick="addAfter()">after로 추가하기</button>
+    <div class="box" id="outerBox">
+
+    </div>
+
+    <script>
+        function addAppend() {
+            let newEl = document.createElement("div");
+            newEl.setAttribute("class", "box");     //class 속성 설정
+            newEl.setAttribute("id", "innerBox1");  //id 속성 설정
+            // <div class="box" id="innerBox1"></div>
+            newEl.innerHTML = "내부박스1";
+            // <div class="box" id="innerBox1">내부박스1</div>
+
+            let el = document.querySelector("#outerBox");
+            el.append(newEl);
+        }
+        function addPrepend() {
+            let newEl = document.createElement("div");
+            newEl.setAttribute("class", "box");
+            newEl.setAttribute("id", "innerBox2");
+            newEl.innerHTML = "내부박스2";
+
+            let el = document.querySelector("#outerBox");
+            el.prepend(newEl);
+        }
+        function addBefore() {
+            let newEl = document.createElement("div");
+            newEl.setAttribute("class", "box");
+            newEl.setAttribute("id", "innerBox3");
+            newEl.innerHTML = "내부박스3";
+
+            let el = document.querySelector("#outerBox");
+            el.before(newEl);
+        }
+        function addAfter() {
+
+
+            let newEl = document.createElement("div");
+            newEl.setAttribute("class", "box");
+            newEl.setAttribute("id", "innerBox4");
+            newEl.innerHTML = "내부박스4";
+
+            let el = document.querySelector("#outerBox");
+            el.after(newEl);
+        }
+    </script>
+</body>
+
+</html

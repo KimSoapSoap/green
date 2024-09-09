@@ -1,10 +1,14 @@
 package shop.mtcoding.blog.board;
 
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import shop.mtcoding.blog.core.error.ex.Exception403;
+import shop.mtcoding.blog.core.error.ex.Exception404;
+import shop.mtcoding.blog.user.User;
 
 import java.util.List;
 
@@ -19,6 +23,56 @@ public class BoardRepositoryTest {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Autowired
+    private EntityManager em;
+
+    @Test
+    public void updateByIdV2_Test() {
+        //given
+        int id = 1;
+        Board board = boardRepository.findById(id);
+
+        //when
+        board.setTitle("제목10");
+        board.setContent("내용10");
+
+
+        //트랜잭션이 commit되면 flush()를 날려서 영속 객체에 변경사항이 있으면(dirty checking) 쿼리를 날린다.
+        //em.persist하거나 em.find로 꺼내면 영속 컨텍스트에 저장돼서 영속 객체상태이다
+        //처음 영속 객체로 저장될 때의 상태를 스냅샷에 정보를 저장하는데 flush()를 할 때 스냅샷에 저장된 정보와
+        //현재 영속 객체의 정보를 비교해서 변경사항이 있으면
+        // persist로 영속화 된 객체는 변경된 녀석으로 insert쿼리가 날아가고
+        // 조회해서 영속화 된 객체는 변경된 녀석으로 update쿼리가 날아간다.
+        em.flush();
+
+    }
+
+
+    @Test
+    public void 게시글삭제() {
+        //given
+        int id = 1;
+        User sessionUser = User.builder().id(1).build();
+
+        //when
+        //db에 게시글 존재여부 확인 (없으면 404에러 던짐)
+        Board board = boardRepository.findById(id);
+        if (board == null) {
+            throw new Exception404("존재하지 않는 게시글입니다.");
+        }
+        //내가 쓴 글인지 확인하기 (403에러. 권한없음)
+        if (board.getUser().getId() != sessionUser.getId()) {
+            throw new Exception403("작성자가 아닙니다.");
+        }
+        //게시글 삭제
+        boardRepository.deleteById(id);
+        //then
+        try {
+            boardRepository.findById(id);
+        } catch (Exception e) {
+            Assertions.assertThat(e.getMessage()).isEqualTo("게시글 id를 찾을 수 없습니다.");
+        }
+    }
 
     @Test
     public void updateById_test() {
@@ -89,7 +143,7 @@ public class BoardRepositoryTest {
         System.out.println(("userId : " + boardList.get(0).getUser().getId()));
         System.out.println("=================================");
 
-        
+
         // eye
         System.out.println("2. 레이지 로딩");
         System.out.println("username : " + boardList.get(0).getUser().getUsername());
@@ -116,7 +170,7 @@ public class BoardRepositoryTest {
 
         // when
         //여기서 테스트한다.
-        boardRepository.save(title, content);
+        // boardRepository.save(title, content);
 
 
         // eye (눈으로 확인)

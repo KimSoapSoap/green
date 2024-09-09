@@ -1,0 +1,158 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+header {
+  background-image: url("/images/background.jpg");
+  height: 880px;
+  background-size: 100% 100%;
+}
+nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+.logo {
+  color: white;
+  font-size: 35px;
+  font-weight: 800;
+}
+.menu {
+  display: flex;
+}
+.menu > div {
+  margin-right: 30px;
+}
+.form__search {
+  position: relative;
+  top: 10px;
+  left: 50px;
+  padding: 20px 30px; /*가로 세로 */
+  border-radius: 6px;
+  width: 430px;
+
+  background-color: white;
+  box-shadow: 0 4px 4px 0 rgb(214, 214, 214);
+}
+
+table {
+  width: 100%;
+}
+
+.input__search {
+  height: 45px;
+  width: 100%;
+  color: rgb(100, 100, 100);
+  font-size: 15px;
+  border: 1px solid rgb(230, 230, 230);
+}
+
+.sub__title__search {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 10px 0px;
+}
+
+.title__search {
+  font-size: 30px;
+  font-weight: 800;
+  padding: 10px 0px;
+  color: rgb(75, 75, 75);
+}
+
+.button__search {
+  background-color: #ff5a5f;
+  color: white;
+  width: 70px;
+  height: 45px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 0px;
+  cursor: pointer;
+}
+
+.button__box {
+  height: 60px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+main {
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 80%;
+}
+
+.card__img {
+  height: 70px;
+  object-fit: cover;
+}
+
+.card__box {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 10px;
+}
+
+.card {
+  display: flex;
+  border: 1px solid rgb(210, 210, 210);
+  border-radius: 6px;
+  box-shadow: 0 0 3px 0 rgb(170, 170, 170);
+}
+
+.sec__content {
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+}
+.sec__title {
+  font-size: 25px;
+  font-weight: 800;
+  color: rgb(68, 66, 66);
+  margin: 20px 0px;
+}
+.sec__content {
+  padding-left: 10px;
+  display: grid;
+  align-items: center;
+  font-weight: 600;
+}
+
+.home__box {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 10px;
+}
+
+.home__img > img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.info1 {
+  font-size: 13px;
+  color: grey;
+}
+
+.info2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgb(60, 60, 60);
+}
+
+.star {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgb(30, 120, 120);
+}
+
+.count,
+.type {
+  font-size: 12px;
+}

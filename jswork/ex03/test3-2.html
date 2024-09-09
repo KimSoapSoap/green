@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box {
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>숨기기</h1>
+    <button onclick="hideDisplay()">display로 숨기기</button>
+    <button onclick="hideVisible()">visible로 숨기기</button>
+    <div class="box">
+        <div class="box" id="innerBox1">
+            내부박스1
+        </div>
+        <div class="box" id="innerBox2">
+            내부박스2
+        </div>
+    </div>
+
+    <script>
+        function hideDisplay() {
+            let el = document.querySelector("#innerBox1");
+            el.style.display = "none";
+        }
+        function hideVisible() {
+            let el = document.querySelector("#innerBox2");
+            el.style.visibility = "hidden";
+        }
+        //none과 hidden의 차이	style.visibility을  hidden으로 하면 영역이 남아 있고 사라지고
+        //style.display를 none으로 하면영역까지 함께 사라진다
+        //그래서 댓글삭제같은 것은 display로 삭제하면 그냥 사라지고   visibility를 hidden으로 하고 삭제된 댓글입니다 해도 된다
+    </script>
+</body>
+
+</html

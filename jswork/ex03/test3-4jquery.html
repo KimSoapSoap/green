@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box {
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>추가하기</h1>
+    <button onclick="addAppend()">appendOriginal로 추가하기</button>
+    <button onclick="addAppend()">append로 추가하기</button>
+    <button onclick="addPrepend()">prepend로 추가하기</button>
+    <button onclick="addBefore()">before로 추가하기</button>
+    <button onclick="addAfter()">after로 추가하기</button>
+    <div class="box" id="outerBox">
+    </div>
+    <script>
+
+
+        function addAppendOriginal() {
+            $("#outerBox").append(`<div class="box" id="innerBox1">내부박스</div>`);
+        }
+
+        function render(id, text) {
+            return `<div class="box" id="${id}">${text}</div>`;
+        }
+
+        function addAppend() {
+            let box = render("inner1", "내부박스1");
+            $("#outerBox").append(box);
+        }
+        function addPrepend() {
+            let box = render("inner2", "내부박스2");
+            $("#outerBox").prepend(box);
+        }
+        function addBefore() {
+            let box = render("outer1", "외부박스1");
+            $("#outerBox").before(box);
+        }
+        function addAfter() {
+            let box = render("outer2", "외부박스2");
+            $("#outerBox").after(box);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <button id="myBtn">Click me</button>
+    <input type="text" id="myIp">
+    <input type="text" id="myIp2">
+
+    <script>
+        const myBtn = document.getElementById("myBtn");
+        myBtn.addEventListener("dblclick", function (e) {
+            console.log(e);
+        });
+
+        const myIp = document.getElementById("myIp");
+        myIp.addEventListener("mouseover", function (e) {
+            console.log(e);
+        });
+
+        const myIp2 = document.getElementById("myIp2");
+        myIp.addEventListener("mouseover", (e) => console.log(e)
+        );
+    </script>
+</body>
+
+</html>

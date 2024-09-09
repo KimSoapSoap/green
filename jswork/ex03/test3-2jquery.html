@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box {
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>숨기기</h1>
+    <button onclick="hideDisplay()">display로 숨기기</button>
+    <button onclick="hideVisible()">visible로 숨기기</button>
+    <div class="box">
+        <div class="box" id="innerBox1">
+            내부박스1
+        </div>
+        <div class="box" id="innerBox2">
+            내부박스2
+        </div>
+    </div>
+
+    <script>
+        function hideDisplay() {
+            $("#innerBox1").hide();   //태그를 숨긴다.(영역 안 남음)
+        }
+
+        function hideVisible() {
+            $("#innerBox2").remove();  //아예 태그를 삭제한다.(영역도 안 남고 태그도 안 남음)
+        }  
+    </script>
+</body>
+
+</html

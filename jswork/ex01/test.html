@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <script>
+        let n1 = 1;
+        let n2 = 1.5;
+        console.log("정수", n1);
+        console.log("실수", n2);
+        let n3 = "자바스크립트 자료형 강좌";
+        console.log("문자열", n3);
+        let n4 = true;
+        console.log("불리언", n4);
+        let n5 = null;
+        console.log("널", n5);
+        let n6 = undefined;
+        let n7;
+        console.log("언디파인", n6);
+        console.log("언디파인", n7);
+        let user = {
+            id: 1,
+            username: "ssar",
+            password: "1234"
+        };
+        console.log("객체", user);
+        console.log("객체", user.id);
+        console.log("객체", user.username);
+        console.log("객체", user.password);
+        let arr = [1, 2, 3];
+        console.log("배열", arr);
+        console.log("배열", arr[0]);
+        console.log("배열", arr[1]);
+        console.log("배열", arr[2]);
+        function fun1() {           //함수
+            console.log("fun1 함수");
+        }
+        fun1();
+
+        let f = function () {       //익명 함수  (자바스크립트의 모든 자료형은 일급 객체라서 매개변수에 담을 수 있다.)
+            console.log("fun2 함수");
+        };
+        f();
+
+        let f1 = () => {    //람다 표현식 (리턴이 있으므로  표현식)
+            return 1;
+        };
+        f1();
+
+        let f2 = () => {    //람다식 (리턴이 없으므로)
+            console.log(f2);
+        };
+        f2();
+
+        let f3 = () => { console.log(1) };  //람다식 축약
+    </script>
+</body>
+
+</html

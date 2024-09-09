@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div id="root">
+
+    </div>
+    <script>
+        function makeDom() {
+            return `<div>그림</div>`;
+        }
+
+        function download() { //비동기로 실행되어야 함
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://192.168.0.99:8080/board/2", false); // false는 동기 요청을 의미함
+            xhr.send();
+            return xhr;
+        }
+
+        $("#root").append(makeDom());
+        $("#root").append(makeDom());
+        let xhr = download();
+        $("#root").append(`<div>${xhr.responseText}</div>`);
+        $("#root").append(makeDom());
+    </script>
+</body>
+
+</html>

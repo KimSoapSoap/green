@@ -9,10 +9,16 @@ import org.example.springv3.user.User;
 //또한 응답시에 전달할 정보를 Entity로 그대로 전달하지 말고 OOResponse클래스를 만들고 OODTO를 만들어서 사용
 public class ReplyRequest {
 
+    //getter, setter 깜빡하지 않을 것.
     @Data
     public static class SaveDTO {
         private Integer boardId;
         private String comment;
+        
+        //댓글 쓸 때 댓글쓴 유저 정보를 따로 SaveDTO에서 받지 않는 이유는
+        //sessionUser 정보를 사용할 것이기 때문이다. 
+        // -> toEntity()로 id빼고 필요한 정보 다 넣어서 객체 만들어서 persist할 때 sessionUser 정보 넣어줌
+        
 
         //insert 할 때는 persist 해줄 것이므로 toEntity()를 만들어서 사용하자.
         //지금은 JPA Repository 사용중이므로 우리가 직접 persist 해줄 필요 없이 JPA Repository의 save 메서드 사용하면 된다

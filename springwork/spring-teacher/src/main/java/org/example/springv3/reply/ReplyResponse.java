@@ -1,9 +1,13 @@
 package org.example.springv3.reply;
 
+import lombok.Data;
+
 //요청시에 필요한 정보를 OORequest클래스를 만들고 OODTO를 만들어서 사용.
 //또한 응답시에 전달할 정보를 Entity로 그대로 전달하지 말고 OOResponse클래스를 만들고 OODTO를 만들어서 사용
 public class ReplyResponse {
 
+    //getter, setter 깜빡하지 않을 것.
+    @Data
     public static class DTO {
 
         private Integer id;
@@ -23,13 +27,5 @@ public class ReplyResponse {
 
         }
 
-        @Override
-        public String toString() {
-            return "DTO{" +
-                    "id=" + id +
-                    ", comment='" + comment + '\'' +
-                    ", username='" + username + '\'' +
-                    '}';
-        }
     }
 }

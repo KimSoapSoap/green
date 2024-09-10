@@ -49,6 +49,7 @@ public class ReplyService {
         System.out.println(3);
         // 2. 비영속 댓글 객체 만들기.
         // boardPS는 어차피 게시글 존재 유무를 먼저 확인해야 하므로 이때 조회한 board를 boardPS로 받아서 전달
+        // SaveDTO에서 유저 정보 따로 받는 게 아니라 sessionUser 정보 사용.
         Reply reply = saveDTO.toEntity(sessionUser, boardPS);
 
         System.out.println(4);
@@ -64,6 +65,22 @@ public class ReplyService {
         // 그렇기 때문에 DTO를 만들어서 응답을 해준다. DTO 만들 때 생성자에 Entity를 전달해서 만들어 주면 된다.
 
         replyRepository.save(reply);
+        // JPA Repository의 save()를 reply를 전달하면서 사용해서
+        // 비영속 객체인 reply를 db에 넣고 영속객체로 만들었다.
+        // JPA Repository가 save에서드로 persist를 대신 사용해준 것.
+        // reply가 db에 들어갔기 때문에 영속성 컨텍스트에 저장되고(1차 캐시에 저장)
+        // 아래에 new ReplyResponse.DTO(reply)로 reply를 사용할 때는 1차캐시에 저장된
+        // 영속 객체(pk값이 존재 -> db에 insert되진 않았지만 jpa가 임의로 부여한)인 reply가 전달됨
+        // 댓글쓰기 요청해온 프론트에 reply id값을 전달 해줄 수 있다.(삭제나 수정시 id값 필요)
+
+        //단, @GeneratedValue(strategy = GenerationType.IDENTITY)경우에는 persist(entity) 하면
+        //즉시 쿼리가 날아간다. 이 경우엔 즉시 insert 쿼리가 날아가므로 바로 db에 쿼리가 날아간다.
+        //같은 트랜잭션 내부에서 쓰기 지연 SQL 저장소에 쿼리 몇개 모아놨다 날리느냐 아니냐의 차이라서
+        // IDENTITY 전략이 다른 전략에 비해 네트워크 성능이 그리 차이나진 않는다.
+
+
+        System.out.println("reply  id : " +  reply.getId());
+
 
         System.out.println(5);
         return new ReplyResponse.DTO(reply);

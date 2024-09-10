@@ -66,47 +66,40 @@
 </div>
 
 <script>
-    //자바스크립트 데이터를 바인딩
-    function replyItem(reply) {
-        return `  <div id="reply-${reply.id}" class="list-group-item d-flex justify-content-between align-items-center">
-                    <div class="d-flex">
-                        <div class="px-1 me-1 bg-primary text-white rounded">${reply.username}</div>
-                        <div>${reply.comment}</div>
-                    </div>
-                    <button onclick="deleteReply('${reply.id}')" type="button" class="btn">🗑</button>
-                   </div>`;
+    function replyItem(reply){
+        return `<div id="reply-${reply.id}" class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="d-flex">
+                    <div class="px-1 me-1 bg-primary text-white rounded">${reply.username}</div>
+                    <div>${reply.comment}</div>
+                </div>
+                <button onclick="deleteReply('${reply.id}')" type="button" class="btn">🗑</button>
+            </div>`;
     }
 
-
-    // 1. 책임 -> 통신해서 데이터 요청하고 응답 받으면 CSR 하기
-    async function saveReply() {
-        // 1. Reply 객체 만들기 (id로 찾아서 -> JavaScript 객체)
-
+    async function saveReply(){
+        console.log(1);
+        // 1. Reply 객체 만들기 (id로 찾아서)
         let reply = {
             comment: $("#comment").val(),
             boardId: $("#boardId").val()
         };
 
+        console.log(2);
         // 2. fetch 요청하기
         let response = await fetch(`/api/reply`, {
             method: "post",
             body: JSON.stringify(reply),
             headers: {
-                "Content-Type": "application/json; charset=utf-8"
+                "Content-Type":"application/json; charset=utf-8"
             }
         });
-        let responseBody = await response.json();  // response DTO를 받는다.
+        console.log(3);
+        let responseBody = await response.json(); // DTO !!
         console.log(responseBody);
-
+        console.log(4);
         // 3. CSR 하기
-        // html태그 있는 것이 복잡해서 replyItem() function을 만들었다
-        // 이 function의 책임은 데이터 바인딩이다. 그래서 분리해야 saveReply()의 책임을 분리시킬 수 있다.
-        $("#reply-box").prepend(replyItem(responseBody.body))
-
-        //댓글 등록하고 댓글 내용칸 비워주기
+        $("#reply-box").prepend(replyItem(responseBody.body));
         $("textarea").val("");
-
-
     }
 
     // 1. 책임 -> 통신해서 데이터 요청하고 응답 받으면 CSR 하기

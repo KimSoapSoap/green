@@ -13,10 +13,12 @@ public class ReplyResponse {
 
         public DTO(Reply reply) {
             this.id = reply.getId();
+            System.out.println("--1");
             this.comment = reply.getComment();
+            System.out.println("--2");
             //만약 User정보가 없다 해도 getter 호출하니까 LAZY로딩 일어나서 정보를 가져 온다.
             this.username = reply.getUser().getUsername();
-
+            System.out.println("--3");
 
 
         }

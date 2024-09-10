@@ -23,10 +23,17 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardQueryRepository boardQueryRepository;
 
-    public List<Board> 게시글목록보기() {
-        Sort sort = Sort.by(Sort.Direction.DESC, "id");
-        List<Board> boardList = boardRepository.findAll(sort);
-        return boardList;
+    //이게 동적 쿼리는 아니다. 동적 쿼리는 경우에 따라 다른 쿼리가 나가는 것이다.
+    public List<Board> 게시글목록보기(String title) {
+        if(title == null) {
+            Sort sort = Sort.by(Sort.Direction.DESC, "id");
+            List<Board> boardList = boardRepository.findAll(sort);
+            return boardList;
+        } else {
+            List<Board> boardList = boardRepository.mFindAll(title);
+            return boardList;
+        }
+
     }
 
 

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <input type="text" id="keyword">
+    <script>
+        let keyword = document.querySelector("#keyword");
+
+        //function에 e를 전달하면 이벤트가 발생할 때 정보를 넘겨준다.
+        keyword.addEventListener("keyup", function (e) {
+            let value = e.target.value;
+            console.log("ok");
+            console.log(e);
+        });
+    </script>
+</body>
+
+</html>
